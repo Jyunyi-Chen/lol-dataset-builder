@@ -38,27 +38,51 @@ export function FPSSelector({ fps, videoFile, meta, isExtracting, onFpsChange, o
   }
 
   return (
-    <div className="bg-gray-800/50 rounded-xl p-4 space-y-3">
-      <div className="flex items-center gap-3">
-        <span className="text-sm text-gray-400 font-medium truncate max-w-[8rem] shrink-0" title={videoFile.name}>
-          {videoFile.name.length > 30 ? videoFile.name.slice(0, 28) + '…' : videoFile.name}
-        </span>
-        <div className="flex items-center gap-2 ml-auto">
-          <label className="text-sm text-gray-400">FPS</label>
-          <input
-            type="number"
-            min={0.1}
-            max={30}
-            step={0.1}
-            value={fps}
-            onChange={(e) => handleFpsChange(parseFloat(e.target.value) || 1)}
-            className="w-20 bg-gray-700 border border-gray-600 rounded-lg px-2 py-1 text-sm text-center focus:outline-none focus:border-purple-500"
-          />
-          {estimatedFrames !== null && (
-            <span className="text-xs text-gray-500">~{estimatedFrames} frames</span>
-          )}
-        </div>
+    <div className="space-y-3">
+      {/* Step indicator — step 2 active */}
+      <div className="flex items-center justify-center gap-0">
+        {[
+          { n: '1', label: 'Upload video', done: true },
+          { n: '2', label: 'Extract frames', active: true },
+          { n: '3', label: 'Annotate & export' },
+        ].map((step, i) => (
+          <div key={step.n} className="flex items-center">
+            <div className="flex items-center gap-2">
+              <div className={`w-6 h-6 rounded-full text-white text-xs font-bold flex items-center justify-center shrink-0 ${
+                step.done ? 'bg-purple-800 text-purple-300' : step.active ? 'bg-purple-600' : 'bg-gray-700 text-gray-500'
+              }`}>
+                {step.done ? '✓' : step.n}
+              </div>
+              <span className={`text-xs whitespace-nowrap ${step.active ? 'text-gray-200' : step.done ? 'text-gray-600' : 'text-gray-600'}`}>
+                {step.label}
+              </span>
+            </div>
+            {i < 2 && <div className="w-8 h-px bg-gray-700 mx-2 shrink-0" />}
+          </div>
+        ))}
       </div>
+
+      <div className="bg-gray-800/50 rounded-xl p-4 space-y-3">
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-gray-400 font-medium truncate max-w-[8rem] shrink-0" title={videoFile.name}>
+            {videoFile.name.length > 30 ? videoFile.name.slice(0, 28) + '…' : videoFile.name}
+          </span>
+          <div className="flex items-center gap-2 ml-auto">
+            <label className="text-sm text-gray-400">FPS</label>
+            <input
+              type="number"
+              min={0.1}
+              max={30}
+              step={0.1}
+              value={fps}
+              onChange={(e) => handleFpsChange(parseFloat(e.target.value) || 1)}
+              className="w-20 bg-gray-700 border border-gray-600 rounded-lg px-2 py-1 text-sm text-center focus:outline-none focus:border-purple-500"
+            />
+            {estimatedFrames !== null && (
+              <span className="text-xs text-gray-500">~{estimatedFrames} frames</span>
+            )}
+          </div>
+        </div>
 
       {warning && (
         <div className="bg-amber-900/30 border border-amber-700/50 rounded-lg p-3 text-sm text-amber-300">
@@ -74,21 +98,22 @@ export function FPSSelector({ fps, videoFile, meta, isExtracting, onFpsChange, o
         </div>
       )}
 
-      <button
-        onClick={handleExtract}
-        disabled={isExtracting || needsConfirm}
-        className="w-full bg-purple-600 hover:bg-purple-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-medium py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
-      >
-        {/* T22: indeterminate spinner, not a progress bar */}
-        {isExtracting ? (
-          <>
-            <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            Extracting frames…
-          </>
-        ) : (
-          'Extract Frames'
-        )}
-      </button>
+        <button
+          onClick={handleExtract}
+          disabled={isExtracting || needsConfirm}
+          className="w-full bg-purple-600 hover:bg-purple-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-medium py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+        >
+          {/* T22: indeterminate spinner, not a progress bar */}
+          {isExtracting ? (
+            <>
+              <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Extracting frames…
+            </>
+          ) : (
+            'Extract Frames'
+          )}
+        </button>
+      </div>
     </div>
   );
 }
