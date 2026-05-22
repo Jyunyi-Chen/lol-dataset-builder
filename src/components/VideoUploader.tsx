@@ -17,7 +17,7 @@ export function VideoUploader({ onFile }: Props) {
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (file) onFile(file);
+    if (file && file.type.startsWith('video/')) onFile(file);
   }
 
   return (
