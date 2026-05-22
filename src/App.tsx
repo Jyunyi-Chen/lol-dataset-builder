@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Annotation } from './types';
 import { useFrameExtractor } from './hooks/useFrameExtractor';
 import { useVideoMeta } from './hooks/useVideoMeta';
@@ -72,6 +72,18 @@ function App() {
 
   const hasFrames = frames.length > 0;
 
+  // Keyboard navigation: ← → when in annotation view
+  useEffect(() => {
+    if (!hasFrames) return;
+    function handleKey(e: KeyboardEvent) {
+      if (e.target instanceof HTMLInputElement) return;
+      if (e.key === 'ArrowRight') onNext();
+      if (e.key === 'ArrowLeft') onPrev();
+    }
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [hasFrames, currentFrame, frames.length, annotations]);
+
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
@@ -123,7 +135,7 @@ function App() {
               onNext={onNext}
             />
 
-            <div className="flex gap-3">
+            <div className="flex gap-3 items-center">
               <button
                 onClick={() => {
                   setVideoFile(null);
@@ -132,7 +144,7 @@ function App() {
                   setCopiedFromFrame(null);
                   clearFrames();
                 }}
-                className="flex-1 py-2 bg-gray-700 hover:bg-gray-600 rounded-xl text-sm font-medium transition-colors"
+                className="px-4 py-2.5 text-sm text-gray-400 hover:text-gray-200 hover:bg-gray-800 rounded-xl transition-colors"
               >
                 ← New Video
               </button>
