@@ -14,6 +14,7 @@ function frameFilename(idx: number): string {
 
 export function ExportButton({ frames, annotations }: Props) {
   const [isExporting, setIsExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
 
   // T23: type predicate to narrow (Annotation | undefined)[] → Annotation[]
   const annotated = annotations.filter((a): a is Annotation => a !== undefined);
@@ -21,6 +22,7 @@ export function ExportButton({ frames, annotations }: Props) {
 
   async function handleExport() {
     setIsExporting(true);
+    setExportError(null);
     try {
       const zip = new JSZip();
       const framesFolder = zip.folder('frames')!;
@@ -51,28 +53,35 @@ export function ExportButton({ frames, annotations }: Props) {
       a.download = 'lol-annotations.zip';
       a.click();
       URL.revokeObjectURL(url);
+    } catch (err) {
+      setExportError(err instanceof Error ? err.message : 'Export failed.');
     } finally {
       setIsExporting(false);
     }
   }
 
   return (
-    <button
-      onClick={handleExport}
-      // T7: disabled when 0 annotations
-      disabled={!hasAnnotations || isExporting}
-      className="w-full bg-green-700 hover:bg-green-600 disabled:opacity-40 disabled:cursor-not-allowed text-white font-medium py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2"
-    >
-      {isExporting ? (
-        <>
-          <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-          Exporting…
-        </>
-      ) : (
-        <>
-          ↓ Export ({annotated.length} frame{annotated.length !== 1 ? 's' : ''})
-        </>
+    <div className="space-y-2">
+      <button
+        onClick={handleExport}
+        // T7: disabled when 0 annotations
+        disabled={!hasAnnotations || isExporting}
+        className="w-full bg-green-700 hover:bg-green-600 disabled:opacity-40 disabled:cursor-not-allowed text-white font-medium py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2"
+      >
+        {isExporting ? (
+          <>
+            <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            Exporting…
+          </>
+        ) : (
+          <>
+            ↓ Export ({annotated.length} frame{annotated.length !== 1 ? 's' : ''})
+          </>
+        )}
+      </button>
+      {exportError && (
+        <p className="text-xs text-red-400 text-center">{exportError}</p>
       )}
-    </button>
+    </div>
   );
 }

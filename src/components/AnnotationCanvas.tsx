@@ -84,9 +84,16 @@ export function AnnotationCanvas({ frame, frameIndex, annotation, copiedFromFram
   const stageWidth = Math.floor(imgDims.w * scale);
   const stageHeight = Math.floor(imgDims.h * scale);
 
-  // Convert display-pixel coords to native pixel coords for saving
+  // Convert display-pixel coords to native pixel coords for saving; clamp to image bounds
   function toNative(x: number, y: number, w: number, h: number): Pick<Annotation, 'x' | 'y' | 'width' | 'height'> {
-    return { x: x / scale, y: y / scale, width: w / scale, height: h / scale };
+    const nx = Math.max(0, Math.min(x / scale, imgDims.w));
+    const ny = Math.max(0, Math.min(y / scale, imgDims.h));
+    return {
+      x: nx,
+      y: ny,
+      width: Math.min(w / scale, imgDims.w - nx),
+      height: Math.min(h / scale, imgDims.h - ny),
+    };
   }
 
   // T12: rubber-band draw — allow on Stage or image; only skip when clicking the annotation rect
