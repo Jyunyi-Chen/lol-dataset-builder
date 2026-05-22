@@ -208,18 +208,30 @@ export function AnnotationCanvas({ frame, frameIndex, annotation, copiedFromFram
         </Stage>
       </div>
 
-      {/* T6: empty state hint */}
+      {/* T6: empty state hint — prominent enough to actually be seen */}
       {showHint && (
-        <p className="text-center text-xs text-gray-500 py-1">
-          Click and drag to draw a bounding box
-        </p>
+        <div className="flex items-center justify-center gap-2 py-2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-400 shrink-0">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <path d="M9 3v18M3 9h18" />
+          </svg>
+          <p className="text-sm text-purple-300 font-medium">
+            Click and drag to draw a bounding box
+          </p>
+        </div>
       )}
 
       {/* T2: copy-forward label */}
       {copiedFromFrame !== null && (
-        <p className="text-center text-xs text-purple-400 py-1">
-          Copied from frame {copiedFromFrame + 1} — edit to override
-        </p>
+        <div className="flex items-center justify-center gap-2 py-2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-400 shrink-0">
+            <path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2" />
+            <rect x="8" y="8" width="12" height="12" rx="2" />
+          </svg>
+          <p className="text-sm text-purple-300">
+            Copied from frame {copiedFromFrame + 1} — drag or redraw to override
+          </p>
+        </div>
       )}
     </div>
   );
