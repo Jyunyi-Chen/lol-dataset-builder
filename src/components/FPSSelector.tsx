@@ -40,7 +40,7 @@ export function FPSSelector({ fps, videoFile, meta, isExtracting, onFpsChange, o
   return (
     <div className="bg-gray-800/50 rounded-xl p-4 space-y-3">
       <div className="flex items-center gap-3">
-        <span className="text-sm text-gray-400 font-medium w-24 shrink-0">
+        <span className="text-sm text-gray-400 font-medium truncate max-w-[8rem] shrink-0" title={videoFile.name}>
           {videoFile.name.length > 30 ? videoFile.name.slice(0, 28) + '…' : videoFile.name}
         </span>
         <div className="flex items-center gap-2 ml-auto">
