@@ -16,7 +16,7 @@ function App() {
   // T2/D1: copiedFromFrame in App state; passed as prop to AnnotationCanvas
   const [copiedFromFrame, setCopiedFromFrame] = useState<number | null>(null);
 
-  const { frames, isExtracting, extractError, extract, clearError } = useFrameExtractor();
+  const { frames, isExtracting, extractError, extract, clearFrames, clearError } = useFrameExtractor();
   const meta = useVideoMeta(videoFile);
 
   function handleFile(file: File) {
@@ -130,6 +130,7 @@ function App() {
                   setCurrentFrame(0);
                   setAnnotations([]);
                   setCopiedFromFrame(null);
+                  clearFrames();
                 }}
                 className="flex-1 py-2 bg-gray-700 hover:bg-gray-600 rounded-xl text-sm font-medium transition-colors"
               >
